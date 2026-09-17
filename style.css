@@ -1,11 +1,11 @@
-/* colour tokens */
+/* colours */
 :root {
   --bg: #141416;
   --fg: #f2f2f0;
   --muted: #8a8a86;
 }
 
-/* clear default page spacing */
+/* reset */
 html,
 body {
   width: 100%;
@@ -20,7 +20,7 @@ body {
   line-height: 1.5;
 }
 
-/* full-screen app shell */
+/* app */
 #app {
   width: 100vw;
   height: 100vh;
@@ -28,7 +28,7 @@ body {
   overflow: hidden;
 }
 
-/* title sits top-left */
+/* header */
 header {
   position: absolute;
   top: 24px;
@@ -49,7 +49,7 @@ header p {
   font-size: 11px;
 }
 
-/* clock sits top-right */
+/* time */
 #current-time-display {
   position: absolute;
   top: 24px;
@@ -70,7 +70,7 @@ header p {
   font-style: normal;
 }
 
-/* portrait stays centred */
+/* portrait */
 #portrait-container {
   position: absolute;
   top: 0;
@@ -82,15 +82,26 @@ header p {
   justify-content: center;
 }
 
-#portrait-container img {
-  height: 78vh;
+#portrait-container svg {
+  --portrait-nudge-x: -10vh;
+  --portrait-nudge-y: 2vh;
+  height: 135vh;
   width: auto;
-  max-width: 90vw;
-  object-fit: contain;
+  max-width: none;
   display: block;
+  transform: translate(var(--portrait-nudge-x), var(--portrait-nudge-y));
 }
 
-/* project info bottom-left */
+/* interactive slots */
+.task-slot {
+  cursor: pointer;
+}
+
+.task-slot:hover {
+  opacity: 0.65;
+}
+
+/* info */
 #info {
   position: absolute;
   bottom: 24px;
@@ -108,34 +119,39 @@ header p {
   margin-bottom: 0;
 }
 
-/* task details bottom-right, hidden for now */
-#task-panel {
-  display: none;
+/* console */
+#console-panel {
   position: absolute;
   bottom: 24px;
   right: 24px;
   z-index: 1;
-  text-align: right;
-  max-width: 240px;
+  width: min(320px, calc(100vw - 48px));
+  max-height: 28vh;
+  overflow: auto;
+  padding: 12px 14px;
+  background: rgba(20, 20, 22, 0.88);
+  border: 1px solid rgba(242, 242, 240, 0.12);
+  text-align: left;
 }
 
-#task-panel h2 {
-  margin: 0 0 6px 0;
-  font-size: 12px;
-  font-weight: normal;
-}
-
-#task-panel p {
-  margin: 0 0 2px 0;
-  font-size: 11px;
+.console-label {
+  margin: 0 0 8px 0;
+  font-size: 10px;
+  letter-spacing: 0.08em;
   color: var(--muted);
 }
 
-#task-panel p:last-child {
-  margin-bottom: 0;
+#console-output {
+  margin: 0;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--fg);
 }
 
-/* tighter spacing on small screens */
+/* mobile */
 @media (max-width: 600px) {
   header {
     top: 16px;
@@ -152,14 +168,16 @@ header p {
     left: 16px;
   }
 
-  #task-panel {
+  #console-panel {
     bottom: 16px;
     right: 16px;
+    width: min(280px, calc(100vw - 32px));
+    max-height: 24vh;
   }
 
-  #portrait-container img {
-    height: 60vh;
-    max-width: 92vw;
+  #portrait-container svg {
+    height: 78vh;
+    max-width: 96vw;
   }
 
   html,
