@@ -1,4 +1,4 @@
-/* colours */
+/* colours + type scale (minimal, readable) */
 :root {
   --bg: #141416;
   --fg: #f2f2f0;
@@ -10,9 +10,27 @@
   --task-coral: #f88e87; /* day — events / appointments */
   --task-yellow: #fac738; /* sunshine — planning / reset */
   --task-neutral: #8a8a86; /* empty / unknown Structured color */
+
+  /* type: one small ladder used everywhere */
+  --type-label: 12px; /* kickers, secondary labels, ticks, ON/OFF */
+  --type-body: 14px; /* UI body, categories, metadata, mode */
+  --type-emphasis: 16px; /* clock, headings, important values */
+  --type-detail: 15px; /* selected-task meta (date/time/duration) */
+  --type-feature: 20px; /* selected-task title */
+
+  /* spacing: match selected-task panel rhythm */
+  --space-line: 4px; /* between related lines */
+  --space-after-title: 10px; /* title → following lines */
+  --space-section: 16px; /* between UI sections */
 }
 
 /* reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   width: 100%;
@@ -23,58 +41,75 @@ body {
   background-color: var(--bg);
   color: var(--fg);
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 12px;
+  font-size: var(--type-body);
   line-height: 1.5;
 }
 
 /* app */
 #app {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   position: relative;
   overflow: hidden;
 }
 
-/* header */
+/* header — title + LIVE/SETTINGS on one row */
 header {
   position: absolute;
   top: 24px;
   left: 24px;
   z-index: 1;
+  max-width: calc(100vw - 48px - min(340px, 40vw));
+  pointer-events: none;
+}
+
+.header-top {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-after-title) var(--space-section);
+  margin: 0 0 var(--space-after-title) 0;
 }
 
 header h1 {
-  margin: 0 0 4px 0;
-  font-size: 11px;
+  margin: 0;
+  font-size: var(--type-body);
   font-weight: normal;
+  line-height: 1.35;
   letter-spacing: 0.08em;
 }
 
 header p {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--type-body);
+  line-height: 1.45;
 }
 
-/* Right chrome — stacks live clock + settings cards */
+/* right chrome — stacks live clock + settings cards */
 #right-chrome {
   position: absolute;
   top: 24px;
   right: 24px;
+  left: auto;
   z-index: 2;
-  width: min(280px, calc(100vw - 48px));
+  box-sizing: border-box;
+  width: min(340px, calc(100% - 48px));
+  max-width: calc(100vw - 48px);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 12px;
+  gap: var(--space-section);
   pointer-events: none;
 }
 
-/* Shared translucent card language for live clock + settings */
+/* shared translucent card language for live clock + settings */
 #time-panel,
 #settings-panel {
   position: static;
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   padding: 18px 16px 16px;
   color: var(--muted);
   pointer-events: auto;
@@ -85,7 +120,7 @@ header p {
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Live time panel */
+/* live time panel */
 #time-panel {
   display: flex;
   flex-direction: column;
@@ -95,9 +130,10 @@ header p {
 }
 
 #time-panel .time-kicker {
-  margin: 0 0 12px 0;
-  font-size: 10px;
+  margin: 0 0 var(--space-after-title) 0;
+  font-size: var(--type-label);
   letter-spacing: 0.1em;
+  line-height: 1.45;
   color: var(--muted);
 }
 
@@ -112,17 +148,19 @@ header p {
 #current-time-display .time-label,
 #dev-time-controls .time-label {
   margin: 0;
-  font-size: 10px;
+  font-size: var(--type-label);
   letter-spacing: 0.08em;
+  line-height: 1.45;
   color: var(--muted);
 }
 
 #current-time {
   display: block;
-  margin-top: 6px;
-  font-size: 15px;
+  margin-top: var(--space-line);
+  font-size: var(--type-emphasis);
   font-style: normal;
   font-weight: normal;
+  line-height: 1.35;
   color: var(--fg);
   letter-spacing: 0.02em;
 }
@@ -134,6 +172,8 @@ header p {
   width: 100%;
   height: 100%;
   touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
   z-index: 0;
 }
 
@@ -142,6 +182,8 @@ header p {
   height: 100%;
   display: block;
   background-color: var(--bg);
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 #portrait-container.is-zoomed {
@@ -152,21 +194,23 @@ header p {
   cursor: grabbing;
 }
 
-/* interactive slots */
-.task-slot {
+/* interactive slots — only active nodes imply clickability */
+.task-slot.is-time-active,
+.recurring-node.is-time-active {
   cursor: pointer;
 }
 
-.recurring-node {
-  cursor: pointer;
+.task-slot.is-time-inactive,
+.recurring-node.is-time-inactive,
+.task-slot.is-sample-placeholder {
+  cursor: default;
 }
 
 /*
-  Live time filter:
-  Per-node opacity is set via element.style.opacity in JS after Illustrator
-  opacity classes are stripped from the slot <g>. Classes control
-  pointer-events. Transitions enable only after initial filter apply
-  (#portrait-container.time-filter-ready) so capture/strip is not animated.
+  live time filter — per-node opacity set in JS after Illustrator
+  opacity classes are stripped from the slot <g>. classes handle
+  pointer-events. transitions wait for #portrait-container.time-filter-ready
+  so the first capture/strip isn't animated
 */
 .task-slot.is-time-active,
 .recurring-node.is-time-active {
@@ -191,7 +235,7 @@ header p {
   transition: opacity 0.35s ease;
 }
 
-/* Hover dims without overwriting the inline filter opacity value */
+/* hover dims without overwriting the inline filter opacity value */
 .task-slot.is-time-active:hover {
   filter: brightness(0.82);
 }
@@ -203,6 +247,17 @@ header p {
 #portrait-container.is-zoomed-deep .task-slot.is-time-active:hover,
 #portrait-container.is-zoomed-deep .recurring-node.is-time-active:hover {
   filter: brightness(0.7);
+}
+
+/* restrained selected-task mark — identifiable, not dramatic */
+.task-slot.is-selected.is-time-active,
+.recurring-node.is-selected.is-time-active {
+  filter: brightness(1.18);
+}
+
+.task-slot.is-selected.is-time-active:hover,
+.recurring-node.is-selected.is-time-active:hover {
+  filter: brightness(1.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -223,15 +278,16 @@ header,
   z-index: 2;
 }
 
-/* Mode switch — museum-label style, not a conventional toggle */
+/* mode switch — beside title, divider keeps it distinct */
 #mode-switch {
-  position: absolute;
-  top: 72px;
-  left: 24px;
-  z-index: 2;
+  position: static;
   display: flex;
-  gap: 16px;
+  gap: var(--space-section);
+  margin-left: 0;
+  padding-left: var(--space-section);
+  border-left: 1px solid rgba(242, 242, 240, 0.18);
   pointer-events: auto;
+  flex-shrink: 0;
 }
 
 #mode-switch button {
@@ -241,7 +297,8 @@ header,
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 10px;
+  font-size: var(--type-label);
+  line-height: 1.45;
   letter-spacing: 0.08em;
   cursor: pointer;
   opacity: 0.7;
@@ -257,41 +314,36 @@ header,
   opacity: 1;
 }
 
-/* Settings panel content (card chrome shared with #time-panel above) */
+/* settings panel content (card chrome shared with #time-panel above) */
 #settings-panel[hidden] {
   display: none;
 }
 
 #settings-panel .settings-kicker {
-  margin: 0 0 4px 0;
-  font-size: 10px;
+  margin: 0 0 var(--space-after-title) 0;
+  font-size: var(--type-label);
   letter-spacing: 0.1em;
+  line-height: 1.45;
   color: var(--muted);
 }
 
 #settings-panel .settings-heading {
-  margin: 0 0 16px 0;
-  font-size: 15px;
+  margin: 0 0 var(--space-section) 0;
+  font-size: var(--type-emphasis);
   font-weight: normal;
   letter-spacing: 0.02em;
+  line-height: 1.35;
   color: var(--fg);
-}
-
-#settings-panel .settings-section-label {
-  margin: 0 0 10px 0;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: var(--muted);
 }
 
 .category-list {
   list-style: none;
-  margin: 0 0 20px 0;
+  margin: 0 0 var(--space-section) 0;
   padding: 0;
 }
 
 .category-list li {
-  margin: 0 0 6px 0;
+  margin: 0 0 var(--space-line) 0;
 }
 
 .category-toggle,
@@ -309,7 +361,7 @@ header,
   background: rgba(242, 242, 240, 0.05);
   color: var(--fg);
   font: inherit;
-  font-size: 11px;
+  font-size: var(--type-body);
   letter-spacing: 0.04em;
   text-align: left;
 }
@@ -369,13 +421,11 @@ header,
   flex: 1 1 auto;
   min-width: 0;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* Shared trailing column so ON/OFF and lock rows share the same width */
+/* shared trailing column so ON/OFF and lock rows share the same width */
 .category-trailing {
-  flex: 0 0 88px;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -385,12 +435,13 @@ header,
 
 .category-state {
   flex: 0 0 auto;
-  font-size: 10px;
+  font-size: var(--type-label);
   letter-spacing: 0.08em;
   color: var(--muted);
 }
 
-.category-toggle[data-category="workSchool"][aria-pressed="true"] .category-state {
+.category-toggle[data-category="workSchool"][aria-pressed="true"]
+  .category-state {
   color: var(--task-green);
 }
 
@@ -416,10 +467,10 @@ header,
   display: block;
 }
 
-/* Protected hint sits inside the row, left of the lock */
+/* protected hint sits inside the row, left of the lock */
 .lock-hint {
   flex: 0 0 auto;
-  font-size: 8px;
+  font-size: var(--type-label);
   letter-spacing: 0.06em;
   color: var(--muted);
   white-space: nowrap;
@@ -444,10 +495,10 @@ header,
   border: 0;
 }
 
-/* Year timeline — discrete snap positions (ALL + 2023–2026) */
+/* year timeline — discrete snap positions (ALL + 2023–2026) */
 .settings-year {
   margin: 0;
-  padding-top: 4px;
+  padding-top: var(--space-line);
   border-top: 1px solid rgba(242, 242, 240, 0.08);
 }
 
@@ -456,25 +507,27 @@ header,
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  margin: 14px 0 10px;
+  margin: 0 0 var(--space-after-title);
 }
 
 .year-title {
-  font-size: 10px;
+  font-size: var(--type-label);
   letter-spacing: 0.1em;
+  line-height: 1.45;
   color: var(--muted);
 }
 
 .year-readout {
-  font-size: 11px;
+  font-size: var(--type-body);
   letter-spacing: 0.04em;
+  line-height: 1.45;
   color: var(--fg);
 }
 
 .year-slider {
   display: block;
   width: 100%;
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-after-title);
   padding: 0;
   accent-color: var(--task-green);
   cursor: pointer;
@@ -494,7 +547,7 @@ header,
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 9px;
+  font-size: var(--type-label);
   letter-spacing: 0.04em;
   text-align: center;
   cursor: pointer;
@@ -512,13 +565,13 @@ header,
 }
 
 /*
-  DEVELOPMENT ONLY — REMOVE BEFORE FINAL
-  Live test-time controls (inside the live clock card).
+  development only — remove before final
+  live test-time controls (inside the live clock card)
 */
 #dev-time-controls {
   position: static;
   width: 100%;
-  margin-top: 14px;
+  margin-top: var(--space-section);
   text-align: left;
   color: var(--muted);
   pointer-events: auto;
@@ -530,7 +583,7 @@ header,
 
 #dev-time-controls .time-divider {
   height: 1px;
-  margin: 0 0 14px;
+  margin: 0 0 var(--space-section);
   background: rgba(242, 242, 240, 0.08);
 }
 
@@ -539,14 +592,14 @@ header,
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  margin: 0 0 10px;
+  margin: 0 0 var(--space-after-title);
   width: 100%;
 }
 
 #dev-time-readout {
   display: block;
   margin: 0;
-  font-size: 15px;
+  font-size: var(--type-emphasis);
   font-style: normal;
   color: var(--fg);
   letter-spacing: 0.02em;
@@ -555,7 +608,7 @@ header,
 #dev-time-slider {
   display: block;
   width: 100%;
-  margin: 0 0 12px 0;
+  margin: 0 0 var(--space-after-title) 0;
   padding: 0;
   accent-color: var(--fg);
   cursor: pointer;
@@ -571,7 +624,7 @@ header,
   background: rgba(242, 242, 240, 0.05);
   color: var(--muted);
   font: inherit;
-  font-size: 10px;
+  font-size: var(--type-label);
   letter-spacing: 0.08em;
   text-align: center;
   cursor: pointer;
@@ -589,6 +642,58 @@ header,
   opacity: 1;
 }
 
+/* portrait deformation toggle — ON/OFF only. */
+.dev-expressive-panel {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding: 12px 12px 10px;
+  color: var(--muted);
+  pointer-events: none;
+  background: rgba(20, 20, 22, 0.55);
+  border: 1px solid rgba(242, 242, 240, 0.08);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: var(--type-label);
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+}
+
+.dev-expressive-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+}
+
+.dev-expressive-label {
+  margin: 0;
+  letter-spacing: 0.08em;
+}
+
+.dev-deform-controls {
+  pointer-events: auto;
+}
+
+.dev-deform-controls #dev-deform-toggle {
+  margin: 0;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: rgba(242, 242, 240, 0.08);
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--type-label);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.dev-deform-controls #dev-deform-toggle[aria-pressed="false"] {
+  color: var(--muted);
+}
+
 /* info */
 #info {
   position: absolute;
@@ -598,8 +703,9 @@ header,
 }
 
 #info p {
-  margin: 0 0 2px 0;
-  font-size: 11px;
+  margin: 0 0 var(--space-line) 0;
+  font-size: var(--type-body);
+  line-height: 1.45;
   color: var(--muted);
 }
 
@@ -609,13 +715,14 @@ header,
 
 #reset-view {
   display: block;
-  margin-top: 10px;
+  margin-top: var(--space-after-title);
   padding: 0;
   border: 0;
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 10px;
+  font-size: var(--type-label);
+  line-height: 1.45;
   letter-spacing: 0.08em;
   cursor: pointer;
   opacity: 0.7;
@@ -630,13 +737,13 @@ header,
   display: none;
 }
 
-/* task panel — minimal, bottom-right, no card */
+/* task panel — selected data point details (primary readable copy) */
 #task-panel {
   position: absolute;
   bottom: 24px;
   right: 24px;
   z-index: 1;
-  max-width: min(280px, calc(100vw - 48px));
+  max-width: min(340px, calc(100vw - 48px));
   text-align: right;
   pointer-events: none;
   opacity: 0;
@@ -653,16 +760,18 @@ header,
 }
 
 #task-title {
-  margin: 0 0 8px 0;
-  font-size: 13px;
+  margin: 0 0 var(--space-after-title) 0;
+  font-size: var(--type-feature);
   font-weight: normal;
+  line-height: 1.35;
   color: var(--fg);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 #task-panel p {
-  margin: 0 0 2px 0;
-  font-size: 11px;
+  margin: 0 0 var(--space-line) 0;
+  font-size: var(--type-detail);
+  line-height: 1.45;
   color: var(--muted);
 }
 
@@ -678,22 +787,26 @@ header,
 
 /* mobile */
 @media (max-width: 600px) {
+  :root {
+    --type-label: 11px;
+    --type-body: 13px;
+    --type-emphasis: 15px;
+    --type-detail: 14px;
+    --type-feature: 18px;
+  }
+
   header {
     top: 16px;
     left: 16px;
+    max-width: calc(100vw - 32px);
   }
 
   #right-chrome {
     top: 16px;
     right: 16px;
-    width: min(260px, calc(100vw - 32px));
+    width: min(320px, calc(100vw - 32px));
     max-height: calc(100vh - 32px);
     overflow-y: auto;
-  }
-
-  #mode-switch {
-    top: 64px;
-    left: 16px;
   }
 
   #info {
@@ -704,10 +817,5 @@ header,
   #task-panel {
     bottom: 16px;
     right: 16px;
-  }
-
-  html,
-  body {
-    font-size: 11px;
   }
 }

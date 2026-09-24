@@ -1,27 +1,25 @@
-// ============================================================
-// STRUCTURED ICON MAP
-// ------------------------------------------------------------
-// Exact key matching: task.symbol → structuredIconMap[task.symbol]
-// Artwork is white SVG markup, centered at (0, 0), ready to insert
-// into each portrait slot's icon group.
-//
-// Do NOT infer icons from task titles.
-// Do NOT use emoji, raster images, Font Awesome, or external libraries.
-// ============================================================
+// Structured icon map
 
-// DEVELOPMENT ONLY — temporary placeholder when artwork is missing.
-// This is NOT a finished icon. Replace with real vector artwork
+// exact key matching: task.symbol → structuredIconMap[task.symbol]
+// artwork is white SVG markup, centered at (0, 0), ready to insert
+// into each portrait slot's icon group.
+
+// do not infer icons from task titles.
+// do not use emoji, raster images, font awesome, or external libraries.
+
+// development only — temporary placeholder when artwork is missing.
+// this is not a finished icon. replace with real vector artwork
 // in structuredIconMap for each Structured symbol identifier.
 const DEVELOPMENT_FALLBACK_ICON = `<g data-development-fallback="true">
   <circle cx="0" cy="0" r="2.4" fill="#fff" opacity="0.55"/>
 </g>`;
 
-// Back-compat alias while migrating call sites
+// back-compat alias while migrating call sites
 const FALLBACK_ICON = DEVELOPMENT_FALLBACK_ICON;
 
 const structuredIconMap = {
 
-  // --- Learning / school ---
+  // learning / school
   "book.fill": `<g transform="translate(-557,-264)">
 <path class="cls-7" d="M553.41,261.13c1.2-.48,2.27-.36,3.23.36v5.38c-.96-.72-2.03-.84-3.23-.36v-5.38ZM557.36,261.49c.96-.72,2.03-.84,3.23-.36v5.38c-1.2-.48-2.27-.36-3.23.36v-5.38Z"/>
 </g>`,
@@ -47,7 +45,7 @@ const structuredIconMap = {
 <path class="cls-5" d="M628.77,275.49h6.1M628.77,277.28h3.94M628.77,279.08h2.15M632,280.15l1.08,1.08,2.51-2.87"/>
 </g>`,
 
-  // --- Creative / media ---
+  // creative / media
   "paintbrush.pointed.fill": `<g transform="translate(-541,-293)">
 <path class="cls-7" d="M539.92,293.72l3.23-4.3c.72-.48,1.08-.24,1.08.72l-2.51,4.66-1.79-1.08ZM539.57,294.08c1.43,0,1.91.6,1.43,1.79-.72.72-1.79.84-3.23.36.96-.24,1.31-.6,1.08-1.08l.72-1.08Z"/>
 </g>`,
@@ -62,7 +60,7 @@ const structuredIconMap = {
 <path class="cls-5" d="M637.06,376.49h7.89v5.02h-7.89v-5.02ZM638.49,377.92h.36M640.28,377.92h.36M642.08,377.92h.36M643.87,377.92h.36M638.49,379.36h.36M640.28,379.36h.36M642.08,379.36h.36M638.85,380.43h4.3"/>
 </g>`,
 
-  // --- Work / productivity ---
+  // work / productivity
   "desktopcomputer": `<g transform="translate(-649,-278)">
 <path class="cls-5" d="M645.41,274.77h7.17v5.02h-7.17v-5.02ZM649,279.79v1.43M647.21,281.59h3.59"/>
 </g>`,
@@ -78,7 +76,7 @@ const structuredIconMap = {
 <path class="cls-5" d="M728.41,535.49h7.17v6.1h-7.17v-6.1ZM728.41,537.28h7.17M730.21,534.41v1.79M733.79,534.41v1.79M729.85,538.72h1.08M732.72,538.72h1.43M729.85,540.15h1.08"/>
 </g>`,
 
-  // --- Personal / errands ---
+  // personal / errands
   "bag.fill": `<g transform="translate(-599,-278)">
 <path class="cls-7" d="M596.13,276.57h5.74v4.66h-5.74v-4.66Z"/>
         <path class="cls-5" d="M597.57,276.57v-.72c0-.79.64-1.43,1.43-1.43s1.43.64,1.43,1.43v.72"/>
@@ -105,7 +103,7 @@ const structuredIconMap = {
 <path class="cls-5" d="M445.77,425.23l3.94-3.94,1.43-.36,1.43-1.43M450.08,420.57l-1.08-1.08M451.15,420.21l-1.08-1.43M452.23,419.49l-1.08-1.43"/>
 </g>`,
 
-  // --- People / communication ---
+  // people / communication
   "person.3.fill": `<g transform="translate(-499,-278)">
 <circle class="cls-7" cx="499" cy="275.85" r="1.08"/>
         <circle class="cls-7" cx="496.13" cy="276.57" r=".9"/>
@@ -125,7 +123,7 @@ const structuredIconMap = {
 <path class="cls-7" d="M532,310.59l-3.59-3.59c-2.51-3.59,1.79-5.38,3.59-2.51,1.79-2.87,6.1-1.08,3.59,2.51l-3.59,3.59Z"/>
 </g>`,
 
-  // --- Events / lifestyle ---
+  // events / lifestyle
   "birthday.cake.fill": `<g transform="translate(-549,-307)">
 <path class="cls-7" d="M545.77,307h6.45v3.23h-6.45v-3.23ZM546.85,305.21h4.3v1.08h-4.3v-1.08Z"/>
         <path class="cls-5" d="M549,305.21v-1.43M545.41,310.59h7.17"/>
@@ -146,8 +144,8 @@ const structuredIconMap = {
 <path class="cls-7" d="M784.15,771.23c-1.88.99-4.21.27-5.2-1.61-.99-1.88-.27-4.21,1.61-5.2-1.39,1.39-1.39,3.63,0,5.02s3.63,1.39,5.02,0c-.24.72-.72,1.31-1.43,1.79Z"/>
 </g>`,
 
-  // --- Batch: top 20 previously missing (centered at 0,0) ---
-  // White pictograms matching portrait icon weight; exact Structured keys only.
+  // batch: top 20 previously missing (centered at 0,0)
+  // white pictograms matching portrait icon weight; exact Structured keys only.
 
   "dollarsign.circle.fill": `<g>
     <circle class="cls-5" cx="0" cy="0" r="3.4"/>
