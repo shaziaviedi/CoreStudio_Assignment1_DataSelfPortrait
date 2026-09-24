@@ -13,11 +13,140 @@
             <p>Self as System</p>
         </header>
 
-        <div id="current-time-display">
-            <p>CURRENT TIME</p>
-            <time id="current-time">00:00</time>
+        <div id="right-chrome">
+            <aside id="time-panel" aria-label="Live time">
+                <p class="time-kicker">LIVE CLOCK</p>
+                <div id="current-time-display">
+                    <p class="time-label">CURRENT TIME</p>
+                    <time id="current-time">00:00</time>
+                </div>
+
+                <!-- DEVELOPMENT ONLY — REMOVE BEFORE FINAL -->
+                <div id="dev-time-controls" aria-label="Development time testing">
+                    <div class="time-divider" aria-hidden="true"></div>
+                    <div class="dev-time-row">
+                        <p class="time-label">TEST TIME</p>
+                        <time id="dev-time-readout">12:00 AM</time>
+                    </div>
+                    <input
+                        type="range"
+                        id="dev-time-slider"
+                        min="0"
+                        max="1439"
+                        step="10"
+                        value="0"
+                        aria-label="Test time in minutes since midnight"
+                    />
+                    <button type="button" id="dev-use-current-time" aria-pressed="true">USE CURRENT TIME</button>
+                </div>
+                <!-- /DEVELOPMENT ONLY — REMOVE BEFORE FINAL -->
+            </aside>
+
+            <aside id="settings-panel" hidden>
+                <p class="settings-kicker">FILTER THE MIRROR</p>
+                <h2 class="settings-heading">Category selection</h2>
+
+                <p class="settings-section-label">Original icon / color families</p>
+                <ul id="category-list" class="category-list">
+                    <li>
+                        <button
+                            type="button"
+                            class="category-toggle"
+                            data-category="workSchool"
+                            aria-pressed="true"
+                        >
+                            <span class="category-dot category-dot-nature" aria-hidden="true"></span>
+                            <span class="category-label">WORK / SCHOOL</span>
+                            <span class="category-trailing">
+                                <span class="category-state">ON</span>
+                            </span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            type="button"
+                            class="category-toggle"
+                            data-category="events"
+                            aria-pressed="true"
+                        >
+                            <span class="category-dot category-dot-day" aria-hidden="true"></span>
+                            <span class="category-label">EVENTS / SCHEDULE</span>
+                            <span class="category-trailing">
+                                <span class="category-state">ON</span>
+                            </span>
+                        </button>
+                    </li>
+                    <li class="category-locked-row">
+                        <div
+                            class="category-locked"
+                            aria-label="Personal category, protected data, locked"
+                        >
+                            <span class="category-dot category-dot-night" aria-hidden="true"></span>
+                            <span class="category-label">PERSONAL</span>
+                            <span class="category-trailing">
+                                <span class="lock-hint" aria-hidden="true">PROTECTED DATA</span>
+                                <span class="category-lock" tabindex="0">
+                                    <svg class="lock-icon" viewBox="0 0 12 14" width="10" height="12" aria-hidden="true" focusable="false">
+                                        <rect x="2" y="6" width="8" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                                        <path d="M3.5 6V4.2a2.5 2.5 0 0 1 5 0V6" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                                    </svg>
+                                    <span class="visually-hidden">Locked, protected data</span>
+                                </span>
+                            </span>
+                        </div>
+                    </li>
+                    <li class="category-locked-row">
+                        <div
+                            class="category-locked"
+                            aria-label="Planning and Reset category, protected data, locked"
+                        >
+                            <span class="category-dot category-dot-sunshine" aria-hidden="true"></span>
+                            <span class="category-label">PLANNING / RESET</span>
+                            <span class="category-trailing">
+                                <span class="lock-hint" aria-hidden="true">PROTECTED DATA</span>
+                                <span class="category-lock" tabindex="0">
+                                    <svg class="lock-icon" viewBox="0 0 12 14" width="10" height="12" aria-hidden="true" focusable="false">
+                                        <rect x="2" y="6" width="8" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                                        <path d="M3.5 6V4.2a2.5 2.5 0 0 1 5 0V6" fill="none" stroke="currentColor" stroke-width="1.2"/>
+                                    </svg>
+                                    <span class="visually-hidden">Locked, protected data</span>
+                                </span>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+
+                <section class="settings-year" aria-label="Year selection">
+                    <div class="year-header">
+                        <span class="year-title">YEAR</span>
+                        <span id="year-readout" class="year-readout">ALL</span>
+                    </div>
+                    <input
+                        type="range"
+                        id="year-slider"
+                        class="year-slider"
+                        min="0"
+                        max="4"
+                        step="1"
+                        value="0"
+                        aria-label="Year timeline"
+                        aria-valuetext="ALL"
+                    />
+                    <div class="year-ticks" role="group" aria-label="Year options">
+                        <button type="button" class="year-tick" data-year="all" aria-pressed="true">ALL</button>
+                        <button type="button" class="year-tick" data-year="2023" aria-pressed="false">2023</button>
+                        <button type="button" class="year-tick" data-year="2024" aria-pressed="false">2024</button>
+                        <button type="button" class="year-tick" data-year="2025" aria-pressed="false">2025</button>
+                        <button type="button" class="year-tick" data-year="2026" aria-pressed="false">2026</button>
+                    </div>
+                </section>
+            </aside>
         </div>
 
+        <nav id="mode-switch" aria-label="Interaction mode">
+            <button type="button" id="mode-live" aria-pressed="true">LIVE</button>
+            <button type="button" id="mode-settings" aria-pressed="false">SETTINGS</button>
+        </nav>
         <section id="portrait-container" aria-label="Portrait">
             <!-- SVG from script.js -->
         </section>
@@ -26,14 +155,18 @@
             <p>Structured</p>
             <p>2023-2026</p>
             <p>2,383 scheduled tasks</p>
+            <button type="button" id="reset-view" hidden>RESET VIEW</button>
         </aside>
 
-        <aside id="console-panel" aria-label="Console">
-            <p class="console-label">CONSOLE</p>
-            <pre id="console-output">Click an icon to inspect a task.</pre>
+        <aside id="task-panel" hidden aria-live="polite">
+            <h2 id="task-title"></h2>
+            <p id="task-date"></p>
+            <p id="task-time"></p>
+            <p id="task-duration"></p>
         </aside>
     </main>
 
+    <script src="icons.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
