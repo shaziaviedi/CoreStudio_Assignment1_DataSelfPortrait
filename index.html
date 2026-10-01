@@ -266,7 +266,7 @@
       </div>
 
       <section id="portrait-container" aria-label="Data portrait">
-        <!-- SVG from script.js -->
+        <!-- SVG loaded by js/data.js -->
       </section>
 
       <aside id="info">
@@ -284,7 +284,19 @@
       </aside>
     </main>
 
-    <script src="icons.js"></script>
-    <script src="script.js?v=step13-content"></script>
+    <!-- order matters, files share globals and main.js runs init -->
+    <script src="js/icons.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/planning-reset.js"></script>
+    <script src="js/slots.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/time-filter.js"></script>
+    <script src="js/settings-filters.js"></script>
+    <script src="js/analysis.js"></script>
+    <script src="js/deformation.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/audits.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
